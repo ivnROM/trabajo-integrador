@@ -6,6 +6,7 @@ def limpiar_pantalla() -> None:
     else:
         os.system('cls')
 
+
 def main() -> None:
     while True:
         print("Elija una opción: ")
