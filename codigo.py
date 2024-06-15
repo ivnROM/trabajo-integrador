@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from collections import deque
 
 class Nodo:
     def __init__(self, tiempo, theta, dtheta):
