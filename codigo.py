@@ -73,7 +73,7 @@ tiempos, thetas, dthetas, lista_datos = euler(tiempo_inicial, theta_inicial, dth
 # Mostrar los datos calculados
 lista_datos.mostrar()
 
-import matplotlib.pyplot as plt
+
 
 def graficar_en_tiempo_real(tiempos, thetas):
     plt.ion()
@@ -91,16 +91,19 @@ def graficar_en_tiempo_real(tiempos, thetas):
     plt.ioff()
     plt.show()
 
-graficar_en_tiempo_real(tiempos, thetas)
+
 
 def menu_interactivo():
     historial_errores = []
     
     while True:
         print("\nMenú Interactivo")
-        print("a. Mostrar los datos calculados")
+        print("a. Mostrar grafica")
+        #arreglar el print N° 1 
+        print("1. Mostrar los datos calculados")
         print("b. Ingresar una coordenada para el cálculo de error")
         print("c. Mostrar historial de coordenadas ingresadas y sus respectivos cálculos de error")
+        #Arreglar en la opcion "d" que la busqueda no sea tan precisa
         print("d. Buscar un dato en la lista ingresando el tiempo")
         print("e. Buscar un dato en la lista ingresando la variable dependiente o su valor más cercano")
         print("f. Limpiar la consola")
@@ -109,7 +112,9 @@ def menu_interactivo():
         opcion = input("Seleccione una opción: ").strip().lower()
         
         if opcion == 'a':
-            lista_datos.mostrar()
+            lista_datos.mostrar()   
+        elif opcion == '1':
+            graficar_en_tiempo_real(tiempos, thetas)
         elif opcion == 'b':
             tiempo = float(input("Ingrese el tiempo: "))
             valor_imagen = float(input("Ingrese el valor de la imagen: "))
@@ -192,7 +197,7 @@ def solucion_analitica(t, theta_0, dtheta_0, C, k):
     A = theta_0
     B = (dtheta_0 + zeta * omega0 * theta_0) / omega_d
     
-    theta_t = np.exp(-zeta * omega0 * t) * (A * np.cos(omega_d * t) + B * np.sin(omega_d * t))
+    theta_t = np.exp(zeta * omega0 * t) * (A * np.cos(omega_d * t) + B * np.sin(omega_d * t))
     return theta_t
 
 # Generar datos de la solución analítica
