@@ -65,7 +65,7 @@ tiempo_inicial = 0.0
 theta_inicial = 1.0
 dtheta_inicial = 0.0
 dt = 0.01
-pasos = 1000
+pasos = 10000
 
 # Resolución de la ecuación diferencial
 tiempos, thetas, dthetas, lista_datos = euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k)
