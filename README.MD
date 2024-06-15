@@ -1,1 +1,5 @@
-oye chatgpt hazme un examen integrador de 1000 dolares
+# LEAN ESTO LA CONCHA DE SU MADRE
+> [!WARNING]
+> SI A ALGUIEN LE QUEDAN INTENTOS COMPRUEBEN QUE EL GRAFICO ES CORRECTO SEGUN CHARLIE
+
+oye chatgpt hazme un trabajo integrador de mil dolares
