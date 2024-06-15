@@ -71,7 +71,6 @@ pasos = 1000
 tiempos, thetas, dthetas, lista_datos = euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k)
 
 # Mostrar los datos calculados
-lista_datos.mostrar()
 
 
 def graficar_en_tiempo_real(tiempos, thetas):
@@ -98,41 +97,39 @@ def menu_interactivo():
     while True:
         print("\nMenú Interactivo")
         print("a. Mostrar grafica")
-        #arreglar el print N° 1 
-        print("1. Mostrar los datos calculados")
-        print("b. Ingresar una coordenada para el cálculo de error")
-        print("c. Mostrar historial de coordenadas ingresadas y sus respectivos cálculos de error")
-        #Arreglar en la opcion "d" que la busqueda no sea tan precisa
-        print("d. Buscar un dato en la lista ingresando el tiempo")
-        print("e. Buscar un dato en la lista ingresando la variable dependiente o su valor más cercano")
-        print("f. Limpiar la consola")
-        print("g. Salir del programa")
+        print("b. Mostrar los datos calculados")
+        print("c. Ingresar una coordenada para el cálculo de error")
+        print("d. Mostrar historial de coordenadas ingresadas y sus respectivos cálculos de error")
+        print("e. Buscar un dato en la lista ingresando el tiempo")
+        print("f. Buscar un dato en la lista ingresando la variable dependiente o su valor más cercano")
+        print("g. Limpiar la consola")
+        print("h. Salir del programa")
         
         opcion = input("Seleccione una opción: ").strip().lower()
         
         if opcion == 'a':
             lista_datos.mostrar()   
-        elif opcion == '1':
-            graficar_en_tiempo_real(tiempos, thetas)
         elif opcion == 'b':
+            graficar_en_tiempo_real(tiempos, thetas)
+        elif opcion == 'c':
             tiempo = float(input("Ingrese el tiempo: "))
             valor_imagen = float(input("Ingrese el valor de la imagen: "))
             error = calcular_error(tiempo, valor_imagen, lista_datos)
             historial_errores.append((tiempo, valor_imagen, error))
             print(f"Error calculado: {error}")
             graficar_punto(tiempos, thetas, tiempo, valor_imagen)
-        elif opcion == 'c':
+        elif opcion == 'd':
             for coord in historial_errores:
                 print(f"Tiempo: {coord[0]}, Valor Imagen: {coord[1]}, Error: {coord[2]}")
-        elif opcion == 'd':
+        elif opcion == 'e':
             tiempo = float(input("Ingrese el tiempo a buscar: "))
             buscar_tiempo(tiempo, lista_datos)
-        elif opcion == 'e':
+        elif opcion == 'f':
             valor = float(input("Ingrese el valor dependiente a buscar: "))
             buscar_valor(valor, lista_datos)
-        elif opcion == 'f':
-            limpiar_consola()
         elif opcion == 'g':
+            limpiar_consola()
+        elif opcion == 'h':
             print("Saliendo del programa...")
             break
         else:
