@@ -56,6 +56,8 @@ def euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k):
     
     return tiempos, thetas, dthetas, lista_datos
 
+largo_grafica = 2
+
 # Parámetros de la ecuación diferencial
 C = 0.1
 k = 1.0
@@ -65,7 +67,7 @@ tiempo_inicial = 0.0
 theta_inicial = 1.0
 dtheta_inicial = 0.0
 dt = 0.01
-pasos = 10000
+pasos = 1000 * largo_grafica
 
 # Resolución de la ecuación diferencial
 tiempos, thetas, dthetas, lista_datos = euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k)
@@ -108,9 +110,9 @@ def menu_interactivo():
         opcion = input("Seleccione una opción: ").strip().lower()
         
         if opcion == 'a':
-            lista_datos.mostrar()   
-        elif opcion == 'b':
             graficar_en_tiempo_real(tiempos, thetas)
+        elif opcion == 'b':
+            lista_datos.mostrar()   
         elif opcion == 'c':
             tiempo = float(input("Ingrese el tiempo: "))
             valor_imagen = float(input("Ingrese el valor de la imagen: "))
