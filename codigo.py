@@ -74,7 +74,6 @@ tiempos, thetas, dthetas, lista_datos = euler(tiempo_inicial, theta_inicial, dth
 lista_datos.mostrar()
 
 
-
 def graficar_en_tiempo_real(tiempos, thetas):
     plt.ion()
     fig, ax = plt.subplots()
@@ -159,10 +158,11 @@ def graficar_punto(tiempos, thetas, tiempo, valor_imagen):
 def buscar_tiempo(tiempo, lista_datos):
     actual = lista_datos.cabeza
     while actual is not None:
-        if actual.tiempo == tiempo:
+        if actual.tiempo < tiempo:
+            actual = actual.siguiente
+        if actual.tiempo >= tiempo:
             print(f"Tiempo: {actual.tiempo}, Theta: {actual.theta}, dTheta: {actual.dtheta}")
             return
-        actual = actual.siguiente
     print("Tiempo no encontrado en la lista.")
 
 def buscar_valor(valor, lista_datos):
