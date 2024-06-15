@@ -67,7 +67,6 @@ k = 1.0
 tiempo_inicial = 0.0
 theta_inicial = 1.0
 dtheta_inicial = 0.0
-# cambiar dt por 0.1 para que la grafica vaya más rapido
 dt = 0.01
 pasos = 1000 * largo_grafica
 
