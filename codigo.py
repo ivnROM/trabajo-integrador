@@ -56,7 +56,8 @@ def euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k):
     
     return tiempos, thetas, dthetas, lista_datos
 
-largo_grafica = 2
+# Por defecto es 1, que extiende la grafica hasta que T = 10s, si es 10, llega a t = 100s
+largo_grafica = 1
 
 # Parámetros de la ecuación diferencial
 C = 0.1
@@ -66,6 +67,7 @@ k = 1.0
 tiempo_inicial = 0.0
 theta_inicial = 1.0
 dtheta_inicial = 0.0
+# cambiar dt por 0.1 para que la grafica vaya más rapido
 dt = 0.01
 pasos = 1000 * largo_grafica
 
