@@ -92,6 +92,19 @@ def graficar_en_tiempo_real(tiempos, thetas):
     plt.ioff()
     plt.show()
 
+def solucion_analitica(t, theta_0, dtheta_0, C, k):
+    # Aquí se calcularía la solución analítica dependiendo de C y k
+    # Esto puede variar si es una ecuación subamortiguada, sobreamortiguada, o críticamente amortiguada
+    # Para simplificar, asumamos el caso subamortiguado
+    omega0 = np.sqrt(k)
+    zeta = C / (2 * np.sqrt(k))
+    omega_d = omega0 * np.sqrt(1 - zeta**2)
+    
+    A = theta_0
+    B = (dtheta_0 + zeta * omega0 * theta_0) / omega_d
+    
+    theta_t = np.exp(zeta * omega0 * t) * (A * np.cos(omega_d * t) + B * np.sin(omega_d * t))
+    return theta_t
 
 
 def menu_interactivo():
@@ -106,7 +119,8 @@ def menu_interactivo():
         print("e. Buscar un dato en la lista ingresando el tiempo")
         print("f. Buscar un dato en la lista ingresando la variable dependiente o su valor más cercano")
         print("g. Limpiar la consola")
-        print("h. Salir del programa")
+        print("h. Graficar Comparación")
+        print("i. Salir del programa")
         
         opcion = input("Seleccione una opción: ").strip().lower()
         
@@ -133,6 +147,14 @@ def menu_interactivo():
         elif opcion == 'g':
             limpiar_consola()
         elif opcion == 'h':
+            # Generar datos de la solución analítica
+            theta_analitica = [solucion_analitica(t, theta_inicial, dtheta_inicial, C, k) for t in tiempos]
+            # Graficar la comparación
+            plt.plot(tiempos, thetas, 'b-', label='Solución Numérica (Euler)')
+            plt.plot(tiempos, theta_analitica, 'r--', label='Solución Analítica')
+            plt.legend()
+            plt.show()
+        elif opcion == 'i':
             print("Saliendo del programa...")
             break
         else:
@@ -186,25 +208,5 @@ def limpiar_consola():
 
 menu_interactivo()
 
-def solucion_analitica(t, theta_0, dtheta_0, C, k):
-    # Aquí se calcularía la solución analítica dependiendo de C y k
-    # Esto puede variar si es una ecuación subamortiguada, sobreamortiguada, o críticamente amortiguada
-    # Para simplificar, asumamos el caso subamortiguado
-    omega0 = np.sqrt(k)
-    zeta = C / (2 * np.sqrt(k))
-    omega_d = omega0 * np.sqrt(1 - zeta**2)
-    
-    A = theta_0
-    B = (dtheta_0 + zeta * omega0 * theta_0) / omega_d
-    
-    theta_t = np.exp(zeta * omega0 * t) * (A * np.cos(omega_d * t) + B * np.sin(omega_d * t))
-    return theta_t
 
-# Generar datos de la solución analítica
-theta_analitica = [solucion_analitica(t, theta_inicial, dtheta_inicial, C, k) for t in tiempos]
 
-# Graficar la comparación
-plt.plot(tiempos, thetas, 'b-', label='Solución Numérica (Euler)')
-plt.plot(tiempos, theta_analitica, 'r--', label='Solución Analítica')
-plt.legend()
-plt.show()
