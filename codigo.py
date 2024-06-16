@@ -1,6 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+import sys
+
+sys.setrecursionlimit(200000000)  # Ajusta esto según sea necesario
+
 class Nodo:
     def __init__(self, tiempo, theta, dtheta):
         self.tiempo = tiempo
