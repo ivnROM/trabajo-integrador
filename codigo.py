@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 class Nodo:
     def __init__(self, tiempo, theta, dtheta):
         self.tiempo = tiempo
@@ -29,32 +28,30 @@ class ListaEnlazada:
             print(f"Tiempo: {actual.tiempo}, Theta: {actual.theta}, dTheta: {actual.dtheta}")
             actual = actual.siguiente
 
-def euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k):
-    tiempos = []
-    thetas = []
-    dthetas = []
+def euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k, lista_datos=None, tiempos=None, thetas=None, dthetas=None):
+    if pasos == 0:
+        return tiempos, thetas, dthetas, lista_datos
     
-    lista_datos = ListaEnlazada()
-    
+    if lista_datos is None:
+        lista_datos = ListaEnlazada()
+        tiempos = []
+        thetas = []
+        dthetas = []
+
     t = tiempo_inicial
     theta = theta_inicial
     dtheta = dtheta_inicial
     
-    for _ in range(pasos):
-        tiempos.append(t)
-        thetas.append(theta)
-        dthetas.append(dtheta)
-        
-        lista_datos.agregar(t, theta, dtheta)
-        
-        dtheta_new = dtheta - dt * (C * dtheta + k * theta)
-        theta_new = theta + dt * dtheta
-        
-        theta = theta_new
-        dtheta = dtheta_new
-        t += dt
+    tiempos.append(t)
+    thetas.append(theta)
+    dthetas.append(dtheta)
     
-    return tiempos, thetas, dthetas, lista_datos
+    lista_datos.agregar(t, theta, dtheta)
+    
+    dtheta_new = dtheta - dt * (C * dtheta + k * theta)
+    theta_new = theta + dt * dtheta
+    
+    return euler(t + dt, theta_new, dtheta_new, dt, pasos - 1, C, k, lista_datos, tiempos, thetas, dthetas)
 
 # Por defecto es 1, que extiende la grafica hasta que T = 10s, si es 10, llega a t = 100s
 largo_grafica = 1
@@ -103,7 +100,7 @@ def solucion_analitica(t, theta_0, dtheta_0, C, k):
     A = theta_0
     B = (dtheta_0 + zeta * omega0 * theta_0) / omega_d
     
-    theta_t = np.exp(zeta * omega0 * t) * (A * np.cos(omega_d * t) + B * np.sin(omega_d * t))
+    theta_t = np.exp(-zeta * omega0 * t) * (A * np.cos(omega_d * t) + B * np.sin(omega_d * t))
     return theta_t
 
 
@@ -161,7 +158,6 @@ def menu_interactivo():
             print("Opción no válida. Inténtelo de nuevo.")
 
 def calcular_error(tiempo, valor_imagen, lista_datos):
-    # Implementar la búsqueda binaria para encontrar el valor correspondiente en la lista y calcular el error
     actual = lista_datos.cabeza
     while actual is not None:
         if actual.tiempo >= tiempo:
@@ -207,6 +203,3 @@ def limpiar_consola():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 menu_interactivo()
-
-
-
