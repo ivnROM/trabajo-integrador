@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 import sys
 
-sys.setrecursionlimit(200000000)  # Ajusta esto según sea necesario
+sys.setrecursionlimit(200000000)  # ojo con esto que despues se rompe el programa, ajustar segun lo adecuado
 
 class Nodo:
     def __init__(self, tiempo, theta, dtheta):
@@ -57,26 +57,24 @@ def euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k, lista_
     
     return euler(t + dt, theta_new, dtheta_new, dt, pasos - 1, C, k, lista_datos, tiempos, thetas, dthetas)
 
-# Por defecto es 1, que extiende la grafica hasta que T = 10s, si es 10, llega a t = 100s
+# por defecto es 1, que extiende la grafica hasta que T = 10s, si es 10, llega a t = 100s
 largo_grafica = 1
 
-# Parámetros de la ecuación diferencial
+# parámetros de la ecuación diferencial
 C = 0.1
 k = 1.0
 
-# Parámetros para el método de Euler
+# parámetros para el método de Euler
 tiempo_inicial = 0.0
 theta_inicial = 1.0
 dtheta_inicial = 0.0
 dt = 0.01
 pasos = 1000 * largo_grafica
 
-# Resolución de la ecuación diferencial
+# resolución de la ecuación diferencial
 tiempos, thetas, dthetas, lista_datos = euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k)
 
-# Mostrar los datos calculados
-
-
+# mostrar los datos calculados
 def graficar_en_tiempo_real(tiempos, thetas):
     plt.ion()
     fig, ax = plt.subplots()
@@ -94,9 +92,9 @@ def graficar_en_tiempo_real(tiempos, thetas):
     plt.show()
 
 def solucion_analitica(t, theta_0, dtheta_0, C, k):
-    # Aquí se calcularía la solución analítica dependiendo de C y k
-    # Esto puede variar si es una ecuación subamortiguada, sobreamortiguada, o críticamente amortiguada
-    # Para simplificar, asumamos el caso subamortiguado
+    # aca se calcula la solución analítica dependiendo de C y k
+    # esto puede variar si es una ecuación subamortiguada, sobreamortiguada, o críticamente amortiguada
+    # para simplificar, asumimos el caso subamortiguado
     omega0 = np.sqrt(k)
     zeta = C / (2 * np.sqrt(k))
     omega_d = omega0 * np.sqrt(1 - zeta**2)
