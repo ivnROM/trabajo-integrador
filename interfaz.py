@@ -242,7 +242,7 @@ def menu_interactivo():
     
     root = tk.Tk()
     root.title("Simulación Diferencial")
-    root.geometry("600x400")
+    root.geometry("700x500")
     style = ttk.Style()
     style.configure("TButton", padding=6, relief="flat", background="#ccc")
     
