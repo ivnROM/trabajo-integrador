@@ -105,20 +105,32 @@ for t, theta, dtheta in zip(tiempos, thetas, dthetas):
 # resolución de la ecuación diferencial
 #tiempos, thetas, dthetas, lista_datos = euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k)
 
-def graficar_en_tiempo_real(tiempos, thetas):
+
+def graficar_en_tiempo_real(tiempos, thetas, theta_analitica=None):
     plt.ion()
-    fig, ax = plt.subplots()
-    linea, = ax.plot(tiempos, thetas, 'b-')
+    fig, ax = plt.subplots(figsize=(8, 5))
+    linea_numerica, = ax.plot(tiempos, thetas, 'b-', label='Solución Numérica (Euler)')
     plt.title(r'Solución de $\frac{d^2\theta}{dt^2} + c\frac{d\theta}{dt} + k\theta = 0$')
     plt.grid(True)
     plt.xlabel('t')
     plt.ylabel(r'$\theta(t)$')
+    if theta_analitica is not None:
+        linea_analitica, = ax.plot(tiempos, theta_analitica, 'r--', label='Solución Analítica')
+    
+    ax.set_xlabel('Tiempo')
+    ax.set_ylabel('Theta')
+    ax.set_title('Comparación de Soluciones')
+    ax.legend()
+    
     for i in range(len(tiempos)):
-        linea.set_xdata(tiempos[:i+1])
-        linea.set_ydata(thetas[:i+1])
+        linea_numerica.set_xdata(tiempos[:i+1])
+        linea_numerica.set_ydata(thetas[:i+1])
+        if theta_analitica is not None:
+            linea_analitica.set_xdata(tiempos[:i+1])
+            linea_analitica.set_ydata(theta_analitica[:i+1])
         ax.relim()
         ax.autoscale_view()
-        plt.draw()
+        fig.canvas.draw_idle()
         plt.pause(0.01)
     
     plt.ioff()
@@ -224,11 +236,7 @@ def menu_interactivo():
     
     def graficar_comparacion():
         theta_analitica = [solucion_analitica(t, theta_inicial, dtheta_inicial, C, k) for t in tiempos]
-        fig, ax = plt.subplots()
-        ax.plot(tiempos, thetas, 'b-', label='Solución Numérica (Euler)')
-        ax.plot(tiempos, theta_analitica, 'r--', label='Solución Analítica')
-        ax.legend()
-        plt.show()
+        graficar_en_tiempo_real(tiempos, thetas, theta_analitica)
     
     def salir():
         root.destroy()
