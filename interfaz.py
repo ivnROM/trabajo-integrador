@@ -109,7 +109,10 @@ def graficar_en_tiempo_real(tiempos, thetas):
     plt.ion()
     fig, ax = plt.subplots()
     linea, = ax.plot(tiempos, thetas, 'b-')
-    
+    plt.title(r'Solución de $\frac{d^2\theta}{dt^2} + c\frac{d\theta}{dt} + k\theta = 0$')
+    plt.grid(True)
+    plt.xlabel('t')
+    plt.ylabel(r'$\theta(t)$')
     for i in range(len(tiempos)):
         linea.set_xdata(tiempos[:i+1])
         linea.set_ydata(thetas[:i+1])
@@ -121,14 +124,6 @@ def graficar_en_tiempo_real(tiempos, thetas):
     plt.ioff()
     plt.show()
 
-def grafica_legible(tiempos, thetas):
-    plt.figure()
-    plt.plot(tiempos, thetas, 'b-')
-    plt.title(r'Solución de $\frac{d^2\theta}{dt^2} + c\frac{d\theta}{dt} + k\theta = 0$')
-    plt.xlabel('t')
-    plt.ylabel(r'$\theta(t)$')
-    plt.grid(True)
-    plt.show()
 
 def solucion_analitica(t, theta_0, dtheta_0, C, k):
     omega0 = np.sqrt(k)
@@ -191,8 +186,6 @@ def menu_interactivo():
     def mostrar_grafica():
         graficar_en_tiempo_real(tiempos, thetas)
 
-    def mostrar_grafica_legible():
-        grafica_legible(tiempos, thetas)
     
     def mostrar_datos():
         datos = lista_datos.mostrar()
@@ -242,7 +235,7 @@ def menu_interactivo():
     
     root = tk.Tk()
     root.title("Simulación Diferencial")
-    root.geometry("600x400")
+    root.geometry("700x500")
     style = ttk.Style()
     style.configure("TButton", padding=6, relief="flat", background="#ccc")
     
@@ -256,7 +249,6 @@ def menu_interactivo():
     acciones_menu = tk.Menu(menu, tearoff=0)
     menu.add_cascade(label="Acciones", menu=acciones_menu)
     acciones_menu.add_command(label="Mostrar Grafica en tiempo real", command=mostrar_grafica)
-    acciones_menu.add_command(label="Mostrar Grafica",command=mostrar_grafica_legible)
     acciones_menu.add_command(label="Mostrar Datos", command=mostrar_datos)
     acciones_menu.add_command(label="Ingresar Coordenada", command=ingresar_coordenada)
     acciones_menu.add_command(label="Mostrar Historial", command=mostrar_historial)
@@ -266,7 +258,6 @@ def menu_interactivo():
     
     tk.Label(root, text="Simulación de Ecuaciones Diferenciales", font=("Helvetica", 16)).pack(pady=10)
     ttk.Button(root, text="Mostrar Grafica en tiempo real", command=mostrar_grafica).pack(pady=5)
-    ttk.Button(root, text="Mostrar Grafica legible", command=mostrar_grafica_legible).pack(pady=5)
     ttk.Button(root, text="Mostrar Datos", command=mostrar_datos).pack(pady=5)
     ttk.Button(root, text="Ingresar Coordenada", command=ingresar_coordenada).pack(pady=5)
     ttk.Button(root, text="Mostrar Historial", command=mostrar_historial).pack(pady=5)
