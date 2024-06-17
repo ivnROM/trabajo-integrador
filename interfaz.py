@@ -6,6 +6,7 @@ from tkinter import ttk, simpledialog, messagebox
 
 import os
 import sys
+from scipy.integrate import solve_ivp
 
 sys.setrecursionlimit(200000000)  # ojo con esto que despues se rompe el programa, ajustar segun lo adecuado
 
@@ -37,6 +38,13 @@ class ListaEnlazada:
             datos.append(f"Tiempo: {actual.tiempo}, Theta: {actual.theta}, dTheta: {actual.dtheta}")
             actual = actual.siguiente
         return datos
+
+#Definimos la ecuacion diferencial
+def eq_diff(t,y,c,k):
+    theta, omega = y
+    dtheta_dt = omega
+    domega_dt = -c * omega - k * theta
+    return[dtheta_dt,domega_dt]
 
 def euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k, lista_datos=None, tiempos=None, thetas=None, dthetas=None):
     if pasos == 0:
@@ -77,8 +85,25 @@ dtheta_inicial = 0.0
 dt = 0.01
 pasos = 1000 * largo_grafica
 
+# resolución de la ecuación diferencial usando solve_ivp  
+t_span = (tiempo_inicial, tiempo_inicial + dt * pasos)
+y0 = [theta_inicial, dtheta_inicial]
+t_eval = np.linspace(*t_span, pasos)
+
+sol = solve_ivp(eq_diff, t_span, y0, args=(C, k), t_eval=t_eval)
+
+tiempos = sol.t
+thetas = sol.y[0]
+dthetas = sol.y[1]
+
+lista_datos = ListaEnlazada()
+for t, theta, dtheta in zip(tiempos, thetas, dthetas):
+    lista_datos.agregar(t, theta, dtheta)
+
+
+
 # resolución de la ecuación diferencial
-tiempos, thetas, dthetas, lista_datos = euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k)
+#tiempos, thetas, dthetas, lista_datos = euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k)
 
 def graficar_en_tiempo_real(tiempos, thetas):
     plt.ion()
@@ -94,6 +119,15 @@ def graficar_en_tiempo_real(tiempos, thetas):
         plt.pause(0.01)
     
     plt.ioff()
+    plt.show()
+
+def grafica_legible(tiempos, thetas):
+    plt.figure()
+    plt.plot(tiempos, thetas, 'b-')
+    plt.title(r'Solución de $\frac{d^2\theta}{dt^2} + c\frac{d\theta}{dt} + k\theta = 0$')
+    plt.xlabel('t')
+    plt.ylabel(r'$\theta(t)$')
+    plt.grid(True)
     plt.show()
 
 def solucion_analitica(t, theta_0, dtheta_0, C, k):
@@ -156,6 +190,9 @@ def menu_interactivo():
 
     def mostrar_grafica():
         graficar_en_tiempo_real(tiempos, thetas)
+
+    def mostrar_grafica_legible():
+        grafica_legible(tiempos, thetas)
     
     def mostrar_datos():
         datos = lista_datos.mostrar()
@@ -218,7 +255,8 @@ def menu_interactivo():
     
     acciones_menu = tk.Menu(menu, tearoff=0)
     menu.add_cascade(label="Acciones", menu=acciones_menu)
-    acciones_menu.add_command(label="Mostrar Grafica", command=mostrar_grafica)
+    acciones_menu.add_command(label="Mostrar Grafica en tiempo real", command=mostrar_grafica)
+    acciones_menu.add_command(label="Mostrar Grafica",command=mostrar_grafica_legible)
     acciones_menu.add_command(label="Mostrar Datos", command=mostrar_datos)
     acciones_menu.add_command(label="Ingresar Coordenada", command=ingresar_coordenada)
     acciones_menu.add_command(label="Mostrar Historial", command=mostrar_historial)
@@ -227,7 +265,8 @@ def menu_interactivo():
     acciones_menu.add_command(label="Graficar Comparación", command=graficar_comparacion)
     
     tk.Label(root, text="Simulación de Ecuaciones Diferenciales", font=("Helvetica", 16)).pack(pady=10)
-    ttk.Button(root, text="Mostrar Grafica", command=mostrar_grafica).pack(pady=5)
+    ttk.Button(root, text="Mostrar Grafica en tiempo real", command=mostrar_grafica).pack(pady=5)
+    ttk.Button(root, text="Mostrar Grafica legible", command=mostrar_grafica_legible).pack(pady=5)
     ttk.Button(root, text="Mostrar Datos", command=mostrar_datos).pack(pady=5)
     ttk.Button(root, text="Ingresar Coordenada", command=ingresar_coordenada).pack(pady=5)
     ttk.Button(root, text="Mostrar Historial", command=mostrar_historial).pack(pady=5)
