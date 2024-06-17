@@ -9,7 +9,7 @@ import sys
 from scipy.integrate import solve_ivp
 
 sys.setrecursionlimit(200000000)  # ojo con esto que despues se rompe el programa, ajustar segun lo adecuado
-
+flag = 0
 class Nodo:
     def __init__(self, tiempo, theta, dtheta):
         self.tiempo = tiempo
@@ -78,6 +78,7 @@ largo_grafica = 1
 C = 0.1
 k = 1.0
 
+
 # parámetros para el método de Euler
 tiempo_inicial = 0.0
 theta_inicial = 1.0
@@ -114,12 +115,17 @@ def graficar_en_tiempo_real(tiempos, thetas, theta_analitica=None):
     plt.grid(True)
     plt.xlabel('t')
     plt.ylabel(r'$\theta(t)$')
+    
+
     if theta_analitica is not None:
         linea_analitica, = ax.plot(tiempos, theta_analitica, 'r--', label='Solución Analítica')
-    
+    if flag == 1:
+        ax.set_title('Comparación de Soluciones')
+    elif flag == 2:
+        plt.title(r'Solución de $\frac{d^2\theta}{dt^2} + c\frac{d\theta}{dt} + k\theta = 0$')
     ax.set_xlabel('Tiempo')
     ax.set_ylabel('Theta')
-    ax.set_title('Comparación de Soluciones')
+    
     ax.legend()
     
     for i in range(len(tiempos)):
@@ -196,6 +202,8 @@ def menu_interactivo():
     historial_errores = []
 
     def mostrar_grafica():
+        global flag 
+        flag = 2
         graficar_en_tiempo_real(tiempos, thetas)
 
     
@@ -235,6 +243,8 @@ def menu_interactivo():
             messagebox.showinfo("Resultado", resultado)
     
     def graficar_comparacion():
+        global flag 
+        flag = 1
         theta_analitica = [solucion_analitica(t, theta_inicial, dtheta_inicial, C, k) for t in tiempos]
         graficar_en_tiempo_real(tiempos, thetas, theta_analitica)
     
