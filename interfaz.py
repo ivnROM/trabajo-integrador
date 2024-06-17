@@ -4,6 +4,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 from tkinter import ttk, simpledialog, messagebox
 
+import os
 import sys
 
 sys.setrecursionlimit(200000000)  # ojo con esto que despues se rompe el programa, ajustar segun lo adecuado
@@ -148,7 +149,6 @@ def buscar_valor(valor, lista_datos):
     return f"Valor más cercano encontrado: Tiempo: {nodo_mas_cercano.tiempo}, Theta: {nodo_mas_cercano.theta}, dTheta: {nodo_mas_cercano.dtheta}"
 
 def limpiar_consola():
-    import os
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def menu_interactivo():
@@ -159,10 +159,10 @@ def menu_interactivo():
     
     def mostrar_datos():
         datos = lista_datos.mostrar()
-        if not datos:
-            messagebox.showinfo("Datos Calculados", "No hay datos disponibles.")
-        else:
-            messagebox.showinfo("Datos Calculados", "\n".join(datos))
+        file = open("datos_log.txt", "w")
+        for i in range(len(datos)):
+            file.write(datos[i] + "\n")
+        os.startfile("datos_log.txt")
     
     def ingresar_coordenada():
         tiempo = simpledialog.askfloat("Input", "Ingrese el tiempo:")
