@@ -10,7 +10,7 @@ import os
 import sys
 from scipy.integrate import solve_ivp
 
-sys.setrecursionlimit(200000000)  # ojo con esto que despues se rompe el programa, ajustar segun lo adecuado
+sys.setrecursionlimit(2000)  # ojo con esto que despues se rompe el programa, ajustar segun lo adecuado
 flag = 0
 
 class Ecuacion:
@@ -92,13 +92,14 @@ tiempo_inicial = 0.0
 theta_inicial = 1.0 # probar con 20
 dtheta_inicial = 0.0
 dt = 0.01 #probar con 0.1
-pasos = 1000 * largo_grafica
+pasos = 100000 * largo_grafica
 
 # resolución de la ecuación diferencial usando solve_ivp  
 t_span = (tiempo_inicial, tiempo_inicial + dt * pasos)
 y0 = [theta_inicial, dtheta_inicial]
 t_eval = np.linspace(*t_span, pasos)
 
+# inventamos una libreria q usa runge kutta 
 sol = solve_ivp(eq_diff, t_span, y0, args=(C, k), t_eval=t_eval)
 
 tiempos = sol.t
