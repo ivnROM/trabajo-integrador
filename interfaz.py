@@ -10,7 +10,7 @@ import os
 import sys
 from scipy.integrate import solve_ivp
 
-sys.setrecursionlimit(2000)  # ojo con esto que despues se rompe el programa, ajustar segun lo adecuado
+sys.setrecursionlimit(200000)  # ojo con esto que despues se rompe el programa, ajustar segun lo adecuado
 flag = 0
 
 class Ecuacion:
@@ -92,7 +92,7 @@ tiempo_inicial = 0.0
 theta_inicial = 1.0 # probar con 20
 dtheta_inicial = 0.0
 dt = 0.01 #probar con 0.1
-pasos = 100000 * largo_grafica
+pasos = 1000 * largo_grafica
 
 # resolución de la ecuación diferencial usando solve_ivp  
 t_span = (tiempo_inicial, tiempo_inicial + dt * pasos)
@@ -257,14 +257,12 @@ def menu_interactivo():
         root.destroy()
 
     root = tk.Tk()
-    root.title("Simulación Diferencial")
-    root.geometry("700x500")
+    root.title("Trabajo Integrador")
+    root.geometry("400x430")
     style = ttk.Style()
-    style.configure("TButton", padding=6, relief="flat", background="#ccc")
-
+    style.configure("TButton", padding=6, relief="flat", background="#CCC")
     menu = tk.Menu(root)
-    root.config(menu=menu)
-
+    root.config(menu=menu, background="#ACE3DF")
     archivo_menu = tk.Menu(menu, tearoff=0)
     menu.add_cascade(label="Archivo", menu=archivo_menu)
     archivo_menu.add_command(label="Salir", command=salir)
@@ -273,19 +271,19 @@ def menu_interactivo():
     menu.add_cascade(label="Acciones", menu=acciones_menu)
     acciones_menu.add_command(label="Mostrar Grafica en tiempo real", command=mostrar_grafica)
     acciones_menu.add_command(label="Mostrar Datos", command=mostrar_datos)
-    acciones_menu.add_command(label="Ingresar Coordenada", command=ingresar_coordenada)
-    acciones_menu.add_command(label="Mostrar Historial", command=mostrar_historial)
+    acciones_menu.add_command(label="Buscar una coordenada para el cálculo de error", command=ingresar_coordenada)
     acciones_menu.add_command(label="Buscar por Tiempo", command=buscar_por_tiempo)
     acciones_menu.add_command(label="Buscar por Valor", command=buscar_por_valor)
+    acciones_menu.add_command(label="Mostrar Historial", command=mostrar_historial)
     acciones_menu.add_command(label="Graficar Comparación", command=graficar_comparacion)
 
     tk.Label(root, text="Simulación de Ecuaciones Diferenciales", font=("Helvetica", 16)).pack(pady=10)
     ttk.Button(root, text="Mostrar Grafica en tiempo real", command=mostrar_grafica).pack(pady=5)
     ttk.Button(root, text="Mostrar Datos", command=mostrar_datos).pack(pady=5)
-    ttk.Button(root, text="Ingresar Coordenada", command=ingresar_coordenada).pack(pady=5)
-    ttk.Button(root, text="Mostrar Historial", command=mostrar_historial).pack(pady=5)
+    ttk.Button(root, text="Buscar una coordenada para el cálculo de error", command=ingresar_coordenada).pack(pady=5)
     ttk.Button(root, text="Buscar Dato por Tiempo", command=buscar_por_tiempo).pack(pady=5)
     ttk.Button(root, text="Buscar Dato por Valor", command=buscar_por_valor).pack(pady=5)
+    ttk.Button(root, text="Mostrar Historial", command=mostrar_historial).pack(pady=5)
     ttk.Button(root, text="Graficar Comparación", command=graficar_comparacion).pack(pady=5)
     ttk.Button(root, text="Salir", command=salir).pack(pady=5)
 
