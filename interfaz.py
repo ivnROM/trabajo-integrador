@@ -10,11 +10,16 @@ from scipy.integrate import solve_ivp
 
 sys.setrecursionlimit(200000000)  # ojo con esto que despues se rompe el programa, ajustar segun lo adecuado
 flag = 0
-class Nodo:
+
+class Ecuacion:
     def __init__(self, tiempo, theta, dtheta):
         self.tiempo = tiempo
         self.theta = theta
         self.dtheta = dtheta
+
+class Nodo:
+    def __init__(self, dato):
+        self.dato = dato
         self.siguiente = None
 
 class ListaEnlazada:
@@ -22,7 +27,8 @@ class ListaEnlazada:
         self.cabeza = None
     
     def agregar(self, tiempo, theta, dtheta):
-        nuevo_nodo = Nodo(tiempo, theta, dtheta)
+        nueva_ecuacion = Ecuacion(tiempo, theta, dtheta)
+        nuevo_nodo = Nodo(nueva_ecuacion)
         if self.cabeza is None:
             self.cabeza = nuevo_nodo
         else:
@@ -35,16 +41,17 @@ class ListaEnlazada:
         actual = self.cabeza
         datos = []
         while actual is not None:
-            datos.append(f"Tiempo: {actual.tiempo}, Theta: {actual.theta}, dTheta: {actual.dtheta}")
+            ecuacion = actual.dato
+            datos.append(f"Tiempo: {ecuacion.tiempo}, Theta: {ecuacion.theta}, dTheta: {ecuacion.dtheta}")
             actual = actual.siguiente
         return datos
 
 #Definimos la ecuacion diferencial
-def eq_diff(t,y,c,k):
+def eq_diff(t, y, c, k):
     theta, omega = y
     dtheta_dt = omega
     domega_dt = -c * omega - k * theta
-    return[dtheta_dt,domega_dt]
+    return [dtheta_dt, domega_dt]
 
 def euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k, lista_datos=None, tiempos=None, thetas=None, dthetas=None):
     if pasos == 0:
@@ -72,18 +79,17 @@ def euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k, lista_
     return euler(t + dt, theta_new, dtheta_new, dt, pasos - 1, C, k, lista_datos, tiempos, thetas, dthetas)
 
 # por defecto es 1, que extiende la grafica hasta que T = 10s, si es 10, llega a t = 100s
-largo_grafica = 1
+largo_grafica = 1 
 
 # parámetros de la ecuación diferencial
 C = 0.1
 k = 1.0
 
-
 # parámetros para el método de Euler
 tiempo_inicial = 0.0
-theta_inicial = 1.0
+theta_inicial = 1.0 # probar con 20
 dtheta_inicial = 0.0
-dt = 0.01
+dt = 0.01 #probar con 0.1
 pasos = 1000 * largo_grafica
 
 # resolución de la ecuación diferencial usando solve_ivp  
@@ -101,12 +107,6 @@ lista_datos = ListaEnlazada()
 for t, theta, dtheta in zip(tiempos, thetas, dthetas):
     lista_datos.agregar(t, theta, dtheta)
 
-
-
-# resolución de la ecuación diferencial
-#tiempos, thetas, dthetas, lista_datos = euler(tiempo_inicial, theta_inicial, dtheta_inicial, dt, pasos, C, k)
-
-
 def graficar_en_tiempo_real(tiempos, thetas, theta_analitica=None):
     plt.ion()
     fig, ax = plt.subplots(figsize=(8, 5))
@@ -116,7 +116,6 @@ def graficar_en_tiempo_real(tiempos, thetas, theta_analitica=None):
     plt.xlabel('t')
     plt.ylabel(r'$\theta(t)$')
     
-
     if theta_analitica is not None:
         linea_analitica, = ax.plot(tiempos, theta_analitica, 'r--', label='Solución Analítica')
     if flag == 1:
@@ -142,7 +141,6 @@ def graficar_en_tiempo_real(tiempos, thetas, theta_analitica=None):
     plt.ioff()
     plt.show()
 
-
 def solucion_analitica(t, theta_0, dtheta_0, C, k):
     omega0 = np.sqrt(k)
     zeta = C / (2 * np.sqrt(k))
@@ -157,12 +155,12 @@ def solucion_analitica(t, theta_0, dtheta_0, C, k):
 def calcular_error(tiempo, valor_imagen, lista_datos):
     actual = lista_datos.cabeza
     while actual is not None:
-        if actual.tiempo >= tiempo:
+        if actual.dato.tiempo >= tiempo:
             break
         actual = actual.siguiente
     if actual is None:
         return float('inf')
-    error = abs(actual.theta - valor_imagen)
+    error = abs(actual.dato.theta - valor_imagen)
     return error
 
 def graficar_punto(tiempos, thetas, tiempo, valor_imagen):
@@ -174,26 +172,26 @@ def graficar_punto(tiempos, thetas, tiempo, valor_imagen):
 def buscar_tiempo(tiempo, lista_datos):
     actual = lista_datos.cabeza
     while actual is not None:
-        if actual.tiempo < tiempo:
+        if actual.dato.tiempo < tiempo:
             actual = actual.siguiente
-        if actual.tiempo >= tiempo:
-            return f"Tiempo: {actual.tiempo}, Theta: {actual.theta}, dTheta: {actual.dtheta}"
+        if actual.dato.tiempo >= tiempo:
+            return f"Tiempo: {actual.dato.tiempo}, Theta: {actual.dato.theta}, dTheta: {actual.dato.dtheta}"
     return "Tiempo no encontrado en la lista."
 
 def buscar_valor(valor, lista_datos):
     actual = lista_datos.cabeza
     nodo_mas_cercano = actual
-    diferencia_minima = abs(actual.theta - valor)
+    diferencia_minima = abs(actual.dato.theta - valor)
     actual = actual.siguiente
     
     while actual is not None:
-        diferencia_actual = abs(actual.theta - valor)
+        diferencia_actual = abs(actual.dato.theta - valor)
         if diferencia_actual < diferencia_minima:
             nodo_mas_cercano = actual
             diferencia_minima = diferencia_actual
         actual = actual.siguiente
     
-    return f"Valor más cercano encontrado: Tiempo: {nodo_mas_cercano.tiempo}, Theta: {nodo_mas_cercano.theta}, dTheta: {nodo_mas_cercano.dtheta}"
+    return f"Valor más cercano encontrado: Tiempo: {nodo_mas_cercano.dato.tiempo}, Theta: {nodo_mas_cercano.dato.theta}, dTheta: {nodo_mas_cercano.dato.dtheta}"
 
 def limpiar_consola():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -219,9 +217,12 @@ def menu_interactivo():
         valor_imagen = simpledialog.askfloat("Input", "Ingrese el valor de la imagen:")
         if tiempo is not None and valor_imagen is not None:
             error = calcular_error(tiempo, valor_imagen, lista_datos)
-            historial_errores.append((tiempo, valor_imagen, error))
-            messagebox.showinfo("Error Calculado", f"Error calculado: {error}")
-            graficar_punto(tiempos, thetas, tiempo, valor_imagen)
+            if error < float('inf'):
+                graficar_punto(tiempos, thetas, tiempo, valor_imagen)
+                messagebox.showinfo("Error", f"Error: {error:.4f}")
+                historial_errores.append((tiempo, valor_imagen, error))
+            else:
+                messagebox.showwarning("Advertencia", "Tiempo no encontrado en la lista.")
     
     def mostrar_historial():
         if not historial_errores:
@@ -234,36 +235,37 @@ def menu_interactivo():
         tiempo = simpledialog.askfloat("Input", "Ingrese el tiempo a buscar:")
         if tiempo is not None:
             resultado = buscar_tiempo(tiempo, lista_datos)
-            messagebox.showinfo("Resultado", resultado)
+            messagebox.showinfo("Resultado de búsqueda", resultado)
     
     def buscar_por_valor():
-        valor = simpledialog.askfloat("Input", "Ingrese el valor dependiente a buscar:")
+        valor = simpledialog.askfloat("Input", "Ingrese el valor a buscar:")
         if valor is not None:
             resultado = buscar_valor(valor, lista_datos)
-            messagebox.showinfo("Resultado", resultado)
+            messagebox.showinfo("Resultado de búsqueda", resultado)
     
     def graficar_comparacion():
         global flag 
         flag = 1
         theta_analitica = [solucion_analitica(t, theta_inicial, dtheta_inicial, C, k) for t in tiempos]
         graficar_en_tiempo_real(tiempos, thetas, theta_analitica)
+
     
     def salir():
         root.destroy()
-    
+
     root = tk.Tk()
     root.title("Simulación Diferencial")
     root.geometry("700x500")
     style = ttk.Style()
     style.configure("TButton", padding=6, relief="flat", background="#ccc")
-    
+
     menu = tk.Menu(root)
     root.config(menu=menu)
-    
+
     archivo_menu = tk.Menu(menu, tearoff=0)
     menu.add_cascade(label="Archivo", menu=archivo_menu)
     archivo_menu.add_command(label="Salir", command=salir)
-    
+
     acciones_menu = tk.Menu(menu, tearoff=0)
     menu.add_cascade(label="Acciones", menu=acciones_menu)
     acciones_menu.add_command(label="Mostrar Grafica en tiempo real", command=mostrar_grafica)
@@ -273,7 +275,7 @@ def menu_interactivo():
     acciones_menu.add_command(label="Buscar por Tiempo", command=buscar_por_tiempo)
     acciones_menu.add_command(label="Buscar por Valor", command=buscar_por_valor)
     acciones_menu.add_command(label="Graficar Comparación", command=graficar_comparacion)
-    
+
     tk.Label(root, text="Simulación de Ecuaciones Diferenciales", font=("Helvetica", 16)).pack(pady=10)
     ttk.Button(root, text="Mostrar Grafica en tiempo real", command=mostrar_grafica).pack(pady=5)
     ttk.Button(root, text="Mostrar Datos", command=mostrar_datos).pack(pady=5)
@@ -283,7 +285,10 @@ def menu_interactivo():
     ttk.Button(root, text="Buscar Dato por Valor", command=buscar_por_valor).pack(pady=5)
     ttk.Button(root, text="Graficar Comparación", command=graficar_comparacion).pack(pady=5)
     ttk.Button(root, text="Salir", command=salir).pack(pady=5)
-    
-    root.mainloop()
 
-menu_interactivo()
+    root.mainloop()
+    
+
+
+if __name__ == "__main__":
+    menu_interactivo()
